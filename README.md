@@ -40,43 +40,58 @@ How to add the bundle?
 ----------------------
 Do it in local.xml of your theme:
 ```php
-    <?xml version="1.0"?>
-    <layout version="0.1.0">
-        <default>
-            <reference name="head">
-                <action method="addCss"><stylesheet>highslide/highslide.css</stylesheet></action>
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addCss"><stylesheet>highslide/highslide.css</stylesheet></action>
 
-                <action method="setBundleItems">
-                    <type>skin_js</type>
-                    <!-- add site specific items here -->
-                </action>
-                <action method="setBundleItems">
-                    <type>skin_css</type>
-                    <!-- default magento -->
-                    <name>css/styles.css</name>
-                    <name>css/widgets.css</name>
-                    <!-- add site specific items here -->
-                </action>
-                <action method="setBundleItems">
-                    <type>js</type>
-                    <!-- default magento -->
-                    <name>prototype/prototype.js</name>
-                    <name>lib/ccard.js</name>
-                    <name>prototype/validation.js</name>
-                    <name>scriptaculous/builder.js</name>
-                    <name>scriptaculous/effects.js</name>
-                    <name>scriptaculous/dragdrop.js</name>
-                    <name>scriptaculous/controls.js</name>
-                    <name>scriptaculous/slider.js</name>
-                    <name>varien/js.js</name>
-                    <name>varien/form.js</name>
-                    <name>varien/menu.js</name>
-                    <name>mage/translate.js</name>
-                    <name>mage/cookies.js</name>
-                    <name>varien/weee.js</name>
-                    <!-- add site specific items here -->
-                </action>
-            </reference>
-        </default>
-    </layout>
+            <action method="setBundleItems">
+                <type>skin_js</type>
+                <!-- add site specific items here -->
+            </action>
+            <action method="setBundleItems">
+                <type>skin_css</type>
+                <!-- default magento -->
+                <name>css/styles.css</name>
+                <name>css/widgets.css</name>
+                <!-- add site specific items here -->
+            </action>
+            <action method="setBundleItems">
+                <type>js</type>
+                <!-- default magento -->
+                <name>prototype/prototype.js</name>
+                <name>lib/ccard.js</name>
+                <name>prototype/validation.js</name>
+                <name>scriptaculous/builder.js</name>
+                <name>scriptaculous/effects.js</name>
+                <name>scriptaculous/dragdrop.js</name>
+                <name>scriptaculous/controls.js</name>
+                <name>scriptaculous/slider.js</name>
+                <name>varien/js.js</name>
+                <name>varien/form.js</name>
+                <name>varien/menu.js</name>
+                <name>mage/translate.js</name>
+                <name>mage/cookies.js</name>
+                <name>varien/weee.js</name>
+                <!-- add site specific items here -->
+            </action>
+        </reference>
+    </default>
+</layout>
 ```
+
+Todo
+----
+- Add better handling of Merge CSS/JS settings in Magento backend. If CSS merging is
+  disabled, JS should still be merged by Speedster.
+- Make it possible to add a file to the bundle so we can, for instance, add weee.js based
+  on Magento backend setting (with an `ifconfig` parameter).
+- Add a layout xml file to the module which adds a default bundle based on default/default
+  theme. Of course, then it must be possible to add a single CSS/JS to the bundle (see
+  above item)
+
+Ideas
+-----
+- Make it possible to add multiple bundles, e.g. for catalog related pages (which includes
+  product.js, configurable.js, bundle.js, ...)
