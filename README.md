@@ -44,8 +44,6 @@ Do it in local.xml of your theme:
 <layout version="0.1.0">
     <default>
         <reference name="head">
-            <action method="addCss"><stylesheet>highslide/highslide.css</stylesheet></action>
-
             <action method="setBundleItems">
                 <type>skin_js</type>
                 <!-- add site specific items here -->
