@@ -20,7 +20,7 @@ ini_set('zlib.output_compression', '0');
 // Minify Entry Point for Magento Extension Fooman Speedster
 define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
-define('BP', dirname(dirname(dirname(__FILE__))));
+define('BP', dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 
 
 /**
