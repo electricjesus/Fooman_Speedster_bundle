@@ -39,7 +39,7 @@ hopefully have it included in the Fooman_Speedster extension.
 How to add the bundle?
 ----------------------
 Do it in local.xml of your theme:
-```php
+```xml
 <?xml version="1.0"?>
 <layout version="0.1.0">
     <default>
