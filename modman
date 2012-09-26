@@ -1,0 +1,5 @@
+app/code/community/Fooman/Speedster  app/code/community/Fooman/Speedster
+app/etc/modules/Fooman_Speedster.xml  app/etc/modules/Fooman_Speedster.xml
+lib/minify  lib/minify
+skin/m  skin/m
+@shell  cp -rf $MODULE/var/minifycache $PROJECT/var/minifycache && chmod 777 $MODULE/var/minifycache
