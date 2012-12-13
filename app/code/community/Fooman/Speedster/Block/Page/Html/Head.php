@@ -152,7 +152,7 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
             }
             if (!empty($items['stylesheet'])) {
                $cssBuild = Mage::getModel('speedster/buildSpeedster')->__construct($items['stylesheet'],BP);
-                foreach ($this->getChunkedItems($items['stylesheet'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
+                foreach ($this->_getChunkedItems($items['stylesheet'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
                     $html .= sprintf($stylesheet, $item, 'media="all"')."\n";
                 }
             }
@@ -165,7 +165,7 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
                     $mergedScriptItems = $items['script']['skin'];
                 }
                 $jsBuild = Mage::getModel('speedster/buildSpeedster')->__construct($mergedScriptItems,BP);
-                foreach ($this->getChunkedItems($mergedScriptItems, $baseJsFast.$jsBuild->getLastModified(), null, $bundleFiles) as $item) {
+                foreach ($this->_getChunkedItems($mergedScriptItems, $baseJsFast.$jsBuild->getLastModified(), null, $bundleFiles) as $item) {
                     $html .= sprintf($script, $item, '')."\n";
                 }
             }
@@ -181,7 +181,7 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
             }
             if (!empty($items['stylesheet_print'])) {
                $cssBuild = Mage::getModel('speedster/buildSpeedster')->__construct($items['stylesheet_print'],BP);
-                foreach ($this->getChunkedItems($items['stylesheet_print'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
+                foreach ($this->_getChunkedItems($items['stylesheet_print'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
                     $html .= sprintf($stylesheet, $item, 'media="print"')."\n";
                 }
             }
@@ -195,7 +195,7 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
         return $html;
     }
 
-    public function getChunkedItems($files, $prefix='', $maxLen=null, $bundleFiles)
+    protected function _getChunkedItems($files, $prefix='', $maxLen=null, $bundleFiles)
     {
         if ($maxLen === null) {
             // URLs of up to 2000 characters are no problem for any client/server combination
