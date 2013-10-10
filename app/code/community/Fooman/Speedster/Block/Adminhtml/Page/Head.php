@@ -19,7 +19,7 @@
  */
 
 class Fooman_Speedster_Block_Adminhtml_Page_Head extends Fooman_Speedster_Block_Page_Html_Head
-{ 
+{
     /**
      * Use Minify for the backend as well
      *
@@ -30,7 +30,7 @@ class Fooman_Speedster_Block_Adminhtml_Page_Head extends Fooman_Speedster_Block_
         return 'adminhtml/url';
     }
 
-     /**
+    /**
      * Retrieve Session Form Key
      *
      * @return string

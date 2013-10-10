@@ -1,24 +1,35 @@
 <?php
+/**
+ * Fooman Speedster
+ *
+ * @package   Fooman_Speedster
+ * @author    Kristof Ringleff <kristof@fooman.co.nz>
+ * @copyright Copyright (c) 2009 Fooman Limited (http://www.fooman.co.nz)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 /**
  * Extend Minify_Build so it returns the last modified timestamp only
- * Called from Magento
- * app/code/community/Fooman/Speedster/Block/Page/Html/Head.php
- *
  */
-set_include_path( BP.DS.'lib'.DS.'minify'. PS . get_include_path());
-require_once 'minify'.DS.'Minify'.DS.'Build.php';
 
-class Fooman_Speedster_Model_BuildSpeedster extends Minify_Build {
-	/**
+require_once BP . DS . 'lib' . DS . 'minify' . DS . 'Minify' . DS . 'Loader.php';
+Minify_Loader::register();
+
+class Fooman_Speedster_Model_BuildSpeedster extends Minify_Build
+{
+
+    /**
      * Create a build object
      *
-     * @param array $sources array of Minify_Source objects and/or file paths
+     * @param array $arguments
      *
-     * @return null
+     * @return \Fooman_Speedster_Model_BuildSpeedster
      */
-    public function __construct($sources, $base = BP)
+    public function __construct($arguments)
     {
+        list($sources, $base) = $arguments;
         $max = 0;
         foreach ((array)$sources as $source) {
             if ($source instanceof Minify_Source) {
@@ -28,7 +39,6 @@ class Fooman_Speedster_Model_BuildSpeedster extends Minify_Build {
                     $source = $base . substr($source, 1);
                 }
                 if (is_file($source)) {
-
                     $max = max($max, filemtime($source));
                 }
             }
@@ -40,14 +50,14 @@ class Fooman_Speedster_Model_BuildSpeedster extends Minify_Build {
 
     /**
      * Get last modified
-     * @param null
+     *
      * @return string
      */
-        public function getLastModified() {
-            if (0 === stripos(PHP_OS, 'win')) {
-                require_once 'Minify.php';
-                Minify::setDocRoot(); // we may be on IIS
-            }
-            return $this->lastModified;
+    public function getLastModified()
+    {
+        if (0 === stripos(PHP_OS, 'win')) {
+            Minify::setDocRoot(); // we may be on IIS
         }
+        return $this->lastModified;
     }
+}
