@@ -19,10 +19,10 @@
  */
 
 /**
- * Html page block
+ * Speedster Html Head Block
  *
- * @package  Fooman_Speedster
- * @author   Fooman (http://www.fooman.co.nz)
+ * @package Fooman_Speedster
+ * @author  Kristof Ringleff <kristof@fooman.co.nz>
  */
 
 class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
@@ -41,24 +41,15 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
 
     public function getCssJsHtml()
     {
-        // prepare HTML
-        $shouldMergeJs = Mage::getStoreConfigFlag('dev/js/merge_files');
-        $shouldMergeCss = Mage::getStoreConfigFlag('dev/css/merge_css_files');
-
-        // until I have another solution: do not merge if one of the flags is turned off
-        if (!$shouldMergeCss || !$shouldMergeJs) {
+        if (!Mage::getStoreConfigFlag('foomanspeedster/settings/enabled')) {
             return parent::getCssJsHtml();
         }
-
-        // Figure out if we are run from a subdirectory
-        //$dir=explode("index.php" , htmlentities($_SERVER['SCRIPT_NAME']));
-        //$webroot=$dir[0];
         $webroot="/";
 
         $lines = array();
 
         $baseJs = Mage::getBaseUrl('js');
-        $baseJsFast = Mage::getBaseUrl('skin').'m/';
+        $baseJsFast = Mage::getBaseUrl('skin') . 'm/';
         $html = '';
         //$html = "<!--".BP."-->\n";
         $script = '<script type="text/javascript" src="%s" %s></script>';
@@ -80,11 +71,11 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
             $if = !empty($item['if']) ? $item['if'] : '';
             switch ($item['type']) {
                 case 'js':
-                    if(strpos($item['name'], 'packaging.js') !==false) {
-                        $item['name'] = $baseJs.$item['name'];
+                    if (strpos($item['name'], 'packaging.js') !== false) {
+                        $item['name'] = $baseJs . $item['name'];
                         $lines[$if]['script_direct'][] = $item;
                     } else {
-                        $filename = $lines[$if]['script']['global'][] = "/".$webroot."js/".$item['name'];
+                        $lines[$if]['script']['global'][] = "/" . $webroot . "js/" . $item['name'];
                         if (in_array($item['name'], $bundleItems['js'])) {
                             $bundleFiles[] = $filename;
                         }
@@ -100,38 +91,41 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
                     break;
 
                 case 'js_css':
-                    $lines[$if]['other'][] = sprintf($stylesheet, $baseJs.$item['name'], $item['params']);
+                    $lines[$if]['other'][] = sprintf($stylesheet, $baseJs . $item['name'], $item['params']);
                     break;
 
                 case 'skin_js':
-                    $chunks=explode('/skin', $this->getSkinUrl($item['name']),2);
-                    $filename = $lines[$if]['script']['skin'][] = "/".$webroot."skin".$chunks[1];
+                    $chunks = explode('/skin', $this->getSkinUrl($item['name']), 2);
+                    $lines[$if]['script']['skin'][] = "/" . $webroot . "skin" . $chunks[1];
                     if (in_array($item['name'], $bundleItems['skin_js'])) {
                         $bundleFiles[] = $filename;
                     }
                     break;
 
                 case 'skin_css':
-                    if($item['params']== 'media="all"'){
-                        $chunks=explode('/skin', $this->getSkinUrl($item['name']),2);
-                        $filename = $lines[$if]['stylesheet'][] = "/".$webroot."skin".$chunks[1];
+                    if ($item['params'] == 'media="all"') {
+                        $chunks = explode('/skin', $this->getSkinUrl($item['name']), 2);
+                        $filename = $lines[$if]['stylesheet'][] = "/" . $webroot . "skin" . $chunks[1];
                         if (in_array($item['name'], $bundleItems['skin_css'])) {
                             $bundleFiles[] = $filename;
                         }
                     } elseif($item['params']=='media="print"'){
-                        $chunks=explode('/skin', $this->getSkinUrl($item['name']),2);
-                        $filename = $lines[$if]['stylesheet_print'][] = "/".$webroot."skin".$chunks[1];
+                        $chunks = explode('/skin', $this->getSkinUrl($item['name']), 2);
+                        $filename = $lines[$if]['stylesheet_print'][] = "/" . $webroot . "skin" . $chunks[1];
                         if (in_array($item['name'], $bundleItems['skin_css'])) {
                             $bundleFiles[] = $filename;
                         }
-                    }
-                    else {
-                        $lines[$if]['other'][] = sprintf($stylesheet, $this->getSkinUrl($item['name']), $item['params']);
+                    } else {
+                        $lines[$if]['other'][] = sprintf(
+                            $stylesheet, $this->getSkinUrl($item['name']), $item['params']
+                        );
                     }
                     break;
 
                 case 'rss':
-                    $lines[$if]['other'][] = sprintf($alternate, 'application/rss+xml'/*'text/xml' for IE?*/, $item['name'], $item['params']);
+                    $lines[$if]['other'][] = sprintf(
+                        $alternate, 'application/rss+xml' /*'text/xml' for IE?*/, $item['name'], $item['params']
+                    );
                     break;
 
                 case 'link_rel':
@@ -140,56 +134,59 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
 
                 case 'ext_js':
                 default:
-                    $lines[$if]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>',$item['name']);
+                    $lines[$if]['other'][] = sprintf(
+                        '<script type="text/javascript" src="%s"></script>', $item['name']
+                    );
                     break;
 
             }
         }
 
-        foreach ($lines as $if=>$items) {
+        foreach ($lines as $if => $items) {
             if (!empty($if)) {
-                $html .= '<!--[if '.$if.']>'."\n";
+                $html .= '<!--[if ' . $if . ']>' . "\n";
             }
             if (!empty($items['stylesheet'])) {
-               $cssBuild = Mage::getModel('speedster/buildSpeedster')->__construct($items['stylesheet'],BP);
+                $cssBuild = Mage::getModel('speedster/buildSpeedster', array($items['stylesheet'], BP));
                 foreach ($this->_getChunkedItems($items['stylesheet'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
-                    $html .= sprintf($stylesheet, $item, 'media="all"')."\n";
+                    $html .= sprintf($stylesheet, $item, 'media="all"') . "\n";
                 }
             }
             if (!empty($items['script']['global']) || !empty($items['script']['skin'])) {
-                if(!empty($items['script']['global']) && !empty($items['script']['skin'])) {
+                if (!empty($items['script']['global']) && !empty($items['script']['skin'])) {
                     $mergedScriptItems = array_merge($items['script']['global'], $items['script']['skin']);
-                } elseif(!empty($items['script']['global']) && empty($items['script']['skin'])) {
+                } elseif (!empty($items['script']['global']) && empty($items['script']['skin'])) {
                     $mergedScriptItems = $items['script']['global'];
                 } else {
                     $mergedScriptItems = $items['script']['skin'];
                 }
-                $jsBuild = Mage::getModel('speedster/buildSpeedster')->__construct($mergedScriptItems,BP);
-                foreach ($this->_getChunkedItems($mergedScriptItems, $baseJsFast.$jsBuild->getLastModified(), null, $bundleFiles) as $item) {
-                    $html .= sprintf($script, $item, '')."\n";
+                $jsBuild = Mage::getModel('speedster/buildSpeedster', array($mergedScriptItems, BP));
+                $chunkedItems = $this->_getChunkedItems($mergedScriptItems, $baseJsFast . $jsBuild->getLastModified(), null, $bundleFiles);
+                foreach ($chunkedItems as $item) {
+                    $html .= sprintf($script, $item, '') . "\n";
                 }
             }
             if (!empty($items['css_direct'])) {
                 foreach ($items['css_direct'] as $item) {
-                    $html .= sprintf($stylesheet, $item['name'])."\n";
+                    $html .= sprintf($stylesheet, $item['name']) . "\n";
                 }
             }
             if (!empty($items['script_direct'])) {
                 foreach ($items['script_direct'] as $item) {
-                    $html .= sprintf($script, $item['name'],'')."\n";
+                    $html .= sprintf($script, $item['name'], '') . "\n";
                 }
             }
             if (!empty($items['stylesheet_print'])) {
-               $cssBuild = Mage::getModel('speedster/buildSpeedster')->__construct($items['stylesheet_print'],BP);
-                foreach ($this->_getChunkedItems($items['stylesheet_print'], $baseJsFast.$cssBuild->getLastModified(), null, $bundleFiles) as $item) {
-                    $html .= sprintf($stylesheet, $item, 'media="print"')."\n";
+                $cssBuild = Mage::getModel('speedster/buildSpeedster', array($items['stylesheet_print'], BP));
+                foreach ($this->_getChunkedItems($items['stylesheet_print'], $baseJsFast . $cssBuild->getLastModified(), null, $bundleFiles) as $item) {
+                    $html .= sprintf($stylesheet, $item, 'media="print"') . "\n";
                 }
             }
             if (!empty($items['other'])) {
-                $html .= join("\n", $items['other'])."\n";
+                $html .= join("\n", $items['other']) . "\n";
             }
             if (!empty($if)) {
-                $html .= '<![endif]-->'."\n";
+                $html .= '<![endif]-->' . "\n";
             }
         }
         return $html;
@@ -197,9 +194,12 @@ class Fooman_Speedster_Block_Page_Html_Head extends Mage_Page_Block_Html_Head
 
     protected function _getChunkedItems($files, $prefix='', $maxLen=null, $bundleFiles)
     {
+        if (!Mage::getStoreConfigFlag('foomanspeedster/settings/enabled')) {
+            return parent::getChunkedItems($items, $prefix, 450);
+        }
         if ($maxLen === null) {
             // URLs of up to 2000 characters are no problem for any client/server combination
-            $maxLen = 1500;
+            $maxLen = 2000;
         }
         $chunks = array();
 

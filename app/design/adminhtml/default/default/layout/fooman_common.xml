@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/magento.css</name></action>
+            <action method="addCss"><name>lib/prototype/windows/themes/magento.css</name></action><!-- This is needed for Magento 1.7 -->
+        </reference>
+    </default>
+    <selftest_popup>
+        <update handle="popup"/>
+        <remove name="footer"/>
+    </selftest_popup>
+</layout>
